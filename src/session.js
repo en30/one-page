@@ -6,13 +6,13 @@ const config = {
   databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
   projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
   storageBucket: "",
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
+  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID
 };
 
 firebase.initializeApp(config);
 
 const provider = new firebase.auth.TwitterAuthProvider();
-firebase.auth().languageCode = 'ja';
+firebase.auth().languageCode = "ja";
 
 const create = async function() {
   try {
@@ -22,14 +22,14 @@ const create = async function() {
   } catch (error) {
     console.error(error);
   }
-}
+};
 
-const destroy = () => firebase.auth().signOut()
+const destroy = () => firebase.auth().signOut();
 
-const onChange = (f) => firebase.auth().onAuthStateChanged(f)
+const onChange = f => firebase.auth().onAuthStateChanged(f);
 
 export default {
   create,
   destroy,
-  onChange,
+  onChange
 };
