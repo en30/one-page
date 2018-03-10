@@ -1,17 +1,33 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import session from './session';
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { currentUser: null };    
+    session.onChange((currentUser) => this.setState({ currentUser }))
+  }
+  
+  signIn = async () => {
+    const currentUser = await session.create();    
+    this.setState({ currentUser });
+  }
+  
+  signOut = async () => {
+    await session.destroy();
+    this.setState({ currentUser: null });
+  }
+
   render() {
+    const { currentUser } = this.state;
     return (
       <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h1 className="App-title">Welcome to React</h1>
-        </header>
         <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
+          よう { currentUser ? currentUser.displayName : '匿名' }<br />
+          {currentUser ? 
+             <button onClick={this.signOut}>ログアウト</button>
+           : <button onClick={this.signIn}>ログイン</button>}            
         </p>
       </div>
     );
