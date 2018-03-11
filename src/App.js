@@ -1,13 +1,20 @@
 import React, { Component } from "react";
 import "./App.css";
 import session from "./session";
+import post from "./post";
+import PostForm from "./PostForm";
 
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { currentUser: null };
+    this.state = { currentUser: null, posts: {} };
     session.onChange(currentUser => this.setState({ currentUser }));
   }
+
+  componentDidMount = async () => {
+    const posts = await post.index();
+    this.setState({ posts });
+  };
 
   signIn = async () => {
     const currentUser = await session.create();
@@ -20,18 +27,26 @@ class App extends Component {
   };
 
   render() {
-    const { currentUser } = this.state;
+    const { currentUser, posts } = this.state;
     return (
       <div className="App">
-        <p className="App-intro">
-          よう {currentUser ? currentUser.displayName : "匿名"}
-          <br />
+        <div className="App-intro">
+          <div>よう {currentUser ? currentUser.displayName : "匿名"}</div>
           {currentUser ? (
-            <button onClick={this.signOut}>ログアウト</button>
+            <div>
+              <button onClick={this.signOut}>ログアウト</button>
+              <PostForm currentUser={currentUser} />
+            </div>
           ) : (
             <button onClick={this.signIn}>ログイン</button>
           )}
-        </p>
+        </div>
+
+        <ul>
+          {Object.values(posts).map(post => (
+            <li key={post.id}>{post.title}</li>
+          ))}
+        </ul>
       </div>
     );
   }
