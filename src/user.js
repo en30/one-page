@@ -1,7 +1,7 @@
 import firebase from "firebase";
 import "firebase/firestore";
 
-const update = async ({ uid, displayName, photoURL }) =>
+const put = async ({ uid, displayName, photoURL }) =>
   firebase
     .firestore()
     .collection("users")
@@ -12,5 +12,5 @@ const update = async ({ uid, displayName, photoURL }) =>
     });
 
 export default {
-  update
+  put
 };
