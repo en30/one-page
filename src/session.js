@@ -1,4 +1,5 @@
 import firebase from "firebase";
+import user from "./user";
 
 const config = {
   apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
@@ -18,6 +19,7 @@ const create = async function() {
   try {
     await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     const result = await firebase.auth().signInWithPopup(provider);
+    await user.update(result.user);
     return result.user;
   } catch (error) {
     console.error(error);
