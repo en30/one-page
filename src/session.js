@@ -19,7 +19,6 @@ const create = async function() {
   try {
     await firebase.auth().setPersistence(firebase.auth.Auth.Persistence.LOCAL);
     const result = await firebase.auth().signInWithPopup(provider);
-    await user.put(result.user);
     return result.user;
   } catch (error) {
     console.error(error);
