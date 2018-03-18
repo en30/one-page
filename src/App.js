@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { Container } from "semantic-ui-react";
+import { Container, Message, Transition } from "semantic-ui-react";
 import "./App.css";
 import session from "./session";
 import Header from "./Header";
@@ -11,7 +11,12 @@ import routes from "./routes";
 class App extends Component {
   constructor(props) {
     super(props);
-    this.state = { currentUser: null, posts: {} };
+    this.state = {
+      currentUser: null,
+      posts: {},
+      messageVisible: false,
+      message: null
+    };
     session.onChange(currentUser => this.setState({ currentUser }));
   }
 
@@ -25,8 +30,20 @@ class App extends Component {
     this.setState({ currentUser: null });
   };
 
+  setMessage = message => {
+    this.setState({ message, messageVisible: true });
+  };
+
+  resetMessage = () => {
+    this.setState({ messageVisible: false });
+  };
+
+  dismissMessage = () => {
+    this.setState({ messageVisible: false });
+  };
+
   render() {
-    const { currentUser } = this.state;
+    const { currentUser, message, messageVisible } = this.state;
     return (
       <BrowserRouter>
         <div className="App">
@@ -36,13 +53,31 @@ class App extends Component {
             signOut={this.signOut}
           />
 
-          <Container as="main" style={{ marginTop: "7em" }}>
-            <Switch>
-              <Route exact path={routes.root} component={Posts} />
-              <Route path={routes.posts.new}>
-                {props => <NewPost {...props} currentUser={currentUser} />}
-              </Route>
-            </Switch>
+          <Container style={{ marginTop: "7em" }}>
+            <Transition
+              visible={messageVisible}
+              duration={{ show: 200, hide: 500 }}
+              onHide={this.resetMessage}
+            >
+              <Message positive onDismiss={this.dismissMessage}>
+                {message}
+              </Message>
+            </Transition>
+
+            <Container as="main" style={{ marginTop: "2em" }}>
+              <Switch>
+                <Route exact path={routes.root} component={Posts} />
+                <Route path={routes.posts.new}>
+                  {props => (
+                    <NewPost
+                      {...props}
+                      currentUser={currentUser}
+                      setMessage={this.setMessage}
+                    />
+                  )}
+                </Route>
+              </Switch>
+            </Container>
           </Container>
         </div>
       </BrowserRouter>

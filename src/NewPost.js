@@ -6,12 +6,12 @@ import routes from "./routes";
 
 const { Input, Button, Field, TextArea } = Form;
 
-const initialState = { title: "", content: "" };
+const initialPost = { title: "", content: "" };
 
 export default class NewPost extends Component {
   constructor(props) {
     super(props);
-    this.state = initialState;
+    this.state = { ...initialPost, loading: false };
   }
 
   update = event => {
@@ -20,17 +20,27 @@ export default class NewPost extends Component {
 
   create = async event => {
     event.preventDefault();
-    const { currentUser } = this.props;
-    await post.put({ ...this.state, user: currentUser.uid });
-    this.reset();
+    const { currentUser, setMessage, history } = this.props;
+    const { title, content } = this.state;
+    this.setState({ loading: true });
+    try {
+      await post.create({ title, content, user: currentUser.uid });
+      this.reset();
+      setMessage("ポストを作成しました！");
+      history.push(routes.root);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      this.setState({ loading: false });
+    }
   };
 
   reset = () => {
-    this.setState(initialState);
+    this.setState(initialPost);
   };
 
   render() {
-    const { title, content } = this.state;
+    const { title, content, loading } = this.state;
     return (
       <div>
         <Card fluid>
@@ -58,7 +68,7 @@ export default class NewPost extends Component {
               </Field>
 
               <Container textAlign="center">
-                <Button secondary type="submit">
+                <Button secondary type="submit" loading={loading}>
                   投稿
                 </Button>
               </Container>
