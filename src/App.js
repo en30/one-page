@@ -7,6 +7,7 @@ import {
   Dimmer,
   Loader
 } from "semantic-ui-react";
+import memoize from "lodash.memoize";
 import "./App.css";
 import session from "./api/session";
 import Header from "./Header";
@@ -50,13 +51,18 @@ class App extends Component {
     this.setState({ messageVisible: false });
   };
 
-  startLoading = () => {
-    this.setState({ loading: true });
+  loading = {
+    start: () => {
+      this.setState({ loading: true });
+    },
+    stop: () => {
+      this.setState({ loading: false });
+    }
   };
 
-  stopLoading = () => {
-    this.setState({ loading: false });
-  };
+  appendProps = memoize((Comp, appended) => props => (
+    <Comp {...props} {...appended} />
+  ));
 
   render() {
     const { currentUser, message, messageVisible, loading } = this.state;
@@ -88,15 +94,11 @@ class App extends Component {
 
             <Container as="main" style={{ marginTop: "2em" }}>
               <Switch>
-                <Route exact path={routes.root}>
-                  {props => (
-                    <Posts
-                      {...props}
-                      startLoading={this.startLoading}
-                      stopLoading={this.stopLoading}
-                    />
-                  )}
-                </Route>
+                <Route
+                  exact
+                  path={routes.root}
+                  component={this.appendProps(Posts, { loading: this.loading })}
+                />
                 <Route path={routes.posts.new}>
                   {props => (
                     <NewPost
@@ -106,15 +108,10 @@ class App extends Component {
                     />
                   )}
                 </Route>
-                <Route path={routes.posts.show()}>
-                  {props => (
-                    <Post
-                      {...props}
-                      startLoading={this.startLoading}
-                      stopLoading={this.stopLoading}
-                    />
-                  )}
-                </Route>
+                <Route
+                  path={routes.posts.show()}
+                  component={this.appendProps(Post, { loading: this.loading })}
+                />
               </Switch>
             </Container>
           </Container>

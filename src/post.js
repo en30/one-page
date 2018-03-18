@@ -12,9 +12,9 @@ export default class Post extends Component {
 
   componentDidMount = async () => {
     const { match: { params: { id } } } = this.props;
-    this.props.startLoading();
+    this.props.loading.start();
     const post = await api.show(id);
-    this.props.stopLoading();
+    this.props.loading.start();
     this.setState({ post });
   };
 

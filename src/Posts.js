@@ -11,9 +11,9 @@ export default class Posts extends Component {
   }
 
   componentDidMount = async () => {
-    this.props.startLoading();
+    this.props.loading.start();
     const posts = await post.index();
-    this.props.stopLoading();
+    this.props.loading.stop();
     this.setState({ posts });
   };
 
