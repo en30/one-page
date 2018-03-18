@@ -1,10 +1,12 @@
 import React, { Component } from "react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { Container } from "semantic-ui-react";
 import "./App.css";
 import session from "./session";
-import post from "./post";
 import Header from "./Header";
-import PostForm from "./PostForm";
+import Posts from "./Posts";
+import NewPost from "./NewPost";
+import routes from "./routes";
 
 class App extends Component {
   constructor(props) {
@@ -12,11 +14,6 @@ class App extends Component {
     this.state = { currentUser: null, posts: {} };
     session.onChange(currentUser => this.setState({ currentUser }));
   }
-
-  componentDidMount = async () => {
-    const posts = await post.index();
-    this.setState({ posts });
-  };
 
   signIn = async () => {
     const currentUser = await session.create();
@@ -29,25 +26,26 @@ class App extends Component {
   };
 
   render() {
-    const { currentUser, posts } = this.state;
+    const { currentUser } = this.state;
     return (
-      <div className="App">
-        <Header
-          currentUser={currentUser}
-          signIn={this.signIn}
-          signOut={this.signOut}
-        />
+      <BrowserRouter>
+        <div className="App">
+          <Header
+            currentUser={currentUser}
+            signIn={this.signIn}
+            signOut={this.signOut}
+          />
 
-        <Container as="main" style={{ marginTop: "7em" }}>
-          <PostForm currentUser={currentUser} />
-
-          <ul>
-            {Object.values(posts).map(post => (
-              <li key={post.id}>{post.title}</li>
-            ))}
-          </ul>
-        </Container>
-      </div>
+          <Container as="main" style={{ marginTop: "7em" }}>
+            <Switch>
+              <Route exact path={routes.root} component={Posts} />
+              <Route path={routes.posts.new}>
+                {props => <NewPost {...props} currentUser={currentUser} />}
+              </Route>
+            </Switch>
+          </Container>
+        </div>
+      </BrowserRouter>
     );
   }
 }

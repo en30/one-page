@@ -1,5 +1,7 @@
 import React, { Component } from "react";
+import { Link } from "react-router-dom";
 import { Menu, Container, Dropdown, Image, Button } from "semantic-ui-react";
+import routes from "./routes";
 
 const User = ({ user }) => (
   <span>
@@ -19,7 +21,11 @@ const UserMenu = ({ currentUser, signOut }) => (
 const Header = ({ currentUser, signIn, signOut }) => (
   <Menu fixed="top" borderless>
     <Container>
-      <Menu.Item header>Firebase使って遊ぼう</Menu.Item>
+      <Menu.Item header>
+        <Link to={routes.root} style={{ color: "inherit" }}>
+          Firebase使って遊ぼう
+        </Link>
+      </Menu.Item>
       <Menu.Menu position="right">
         <Menu.Item>
           {currentUser ? (
