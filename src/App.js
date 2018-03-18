@@ -1,7 +1,9 @@
 import React, { Component } from "react";
+import { Container } from "semantic-ui-react";
 import "./App.css";
 import session from "./session";
 import post from "./post";
+import Header from "./Header";
 import PostForm from "./PostForm";
 
 class App extends Component {
@@ -30,23 +32,21 @@ class App extends Component {
     const { currentUser, posts } = this.state;
     return (
       <div className="App">
-        <div className="App-intro">
-          <div>よう {currentUser ? currentUser.displayName : "匿名"}</div>
-          {currentUser ? (
-            <div>
-              <button onClick={this.signOut}>ログアウト</button>
-              <PostForm currentUser={currentUser} />
-            </div>
-          ) : (
-            <button onClick={this.signIn}>ログイン</button>
-          )}
-        </div>
+        <Header
+          currentUser={currentUser}
+          signIn={this.signIn}
+          signOut={this.signOut}
+        />
 
-        <ul>
-          {Object.values(posts).map(post => (
-            <li key={post.id}>{post.title}</li>
-          ))}
-        </ul>
+        <Container as="main" style={{ marginTop: "7em" }}>
+          <PostForm currentUser={currentUser} />
+
+          <ul>
+            {Object.values(posts).map(post => (
+              <li key={post.id}>{post.title}</li>
+            ))}
+          </ul>
+        </Container>
       </div>
     );
   }
