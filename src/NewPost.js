@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { Card, Form, Container } from "semantic-ui-react";
-import post from "./post";
+import post from "./api/post";
 import routes from "./routes";
 
 const { Input, Button, Field, TextArea } = Form;

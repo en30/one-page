@@ -1,6 +1,15 @@
 import firebase from "firebase";
 import "firebase/firestore";
 
+// Firestore does not have either IN or OR
+const list = async userIds => {
+  const users = await Promise.all(userIds.map(id => show(id)));
+  return users.reduce((a, e) => {
+    a[e.id] = e;
+    return a;
+  }, {});
+};
+
 const show = async id =>
   firebase
     .firestore()
@@ -20,6 +29,7 @@ const put = async ({ uid, displayName, photoURL }) =>
     });
 
 export default {
+  list,
   show,
   put
 };

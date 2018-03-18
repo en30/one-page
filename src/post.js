@@ -1,66 +1,40 @@
-import firebase from "firebase";
-import "firebase/firestore";
-import user from "./user";
+import React, { Component } from "react";
+import { Link } from "react-router-dom";
+import { Container, Header, Loader, Dimmer } from "semantic-ui-react";
+import api from "./api/post";
+import routes from "./routes";
 
-const collection = "posts";
+export default class Post extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { post: null, loading: true };
+  }
 
-// Firestore does not have either IN or OR
-const fetchUsers = async querySnapshot => {
-  let uniqueUsers = {};
-  querySnapshot.forEach(doc => (uniqueUsers[doc.data().user] = true));
-  const users = await Promise.all(
-    Object.keys(uniqueUsers).map(id => user.show(id))
-  );
-  return users.reduce((a, e) => {
-    a[e.id] = e;
-    return a;
-  }, {});
-};
+  componentDidMount = async () => {
+    const { match: { params: { id } } } = this.props;
+    const post = await api.show(id);
+    this.setState({ post, loading: false });
+  };
 
-const embedUsers = (querySnapshot, users) => {
-  let res = {};
-  querySnapshot.forEach(doc => {
-    const attrs = doc.data();
-    res[doc.id] = { id: doc.id, ...attrs, user: users[attrs.user] };
-  });
-  return res;
-};
+  render() {
+    const { post, loading } = this.state;
+    return (
+      <div>
+        <Container textAlign="center">
+          <Link to={routes.root}>一覧に戻る</Link>
+        </Container>
 
-const index = async () => {
-  const querySnapshot = await firebase
-    .firestore()
-    .collection(collection)
-    .orderBy("createdAt", "desc")
-    .get();
-  const users = await fetchUsers(querySnapshot);
-  return embedUsers(querySnapshot, users);
-};
-
-const create = post =>
-  firebase
-    .firestore()
-    .collection(collection)
-    .doc()
-    .set({
-      ...post,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-
-const update = post => {
-  const { id, ...attrs } = post;
-  return firebase
-    .firestore()
-    .collection(collection)
-    .doc(id)
-    .set({
-      ...attrs,
-      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-};
-
-export default {
-  index,
-  create,
-  update
-};
+        {loading ? (
+          <Dimmer active>
+            <Loader />
+          </Dimmer>
+        ) : (
+          <Container style={{ paddingTop: "3em" }}>
+            <Header>{post.title}</Header>
+            <Container as="article">{post.content}</Container>
+          </Container>
+        )}
+      </div>
+    );
+  }
+}

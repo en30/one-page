@@ -2,8 +2,9 @@ import React, { Component } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import { Container, Message, Transition } from "semantic-ui-react";
 import "./App.css";
-import session from "./session";
+import session from "./api/session";
 import Header from "./Header";
+import Post from "./Post";
 import Posts from "./Posts";
 import NewPost from "./NewPost";
 import routes from "./routes";
@@ -76,6 +77,7 @@ class App extends Component {
                     />
                   )}
                 </Route>
+                <Route path={routes.posts.show()} component={Post} />
               </Switch>
             </Container>
           </Container>
