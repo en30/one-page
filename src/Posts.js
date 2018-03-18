@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { Container, Header, Item, Image } from "semantic-ui-react";
 import post from "./post";
 import routes from "./routes";
 
@@ -18,12 +19,22 @@ export default class Posts extends Component {
     const { posts } = this.state;
     return (
       <div>
-        <Link to={routes.posts.new}>新規作成</Link>
-        <ul>
+        <Header>最新のポスト一覧</Header>
+
+        <Item.Group>
           {Object.values(posts).map(post => (
-            <li key={post.id}>{post.title}</li>
+            <Item key={post.id}>
+              <Item.Image avatar size="mini" src={post.user.photoURL} />
+              <Item.Content verticalAlign="middle">
+                <Item.Header>{post.title}</Item.Header>
+              </Item.Content>
+            </Item>
           ))}
-        </ul>
+        </Item.Group>
+
+        <Container textAlign="center">
+          <Link to={routes.posts.new}>新規作成</Link>
+        </Container>
       </div>
     );
   }
