@@ -16,18 +16,20 @@ service cloud.firestore {
     }
 
     match /posts/{postId} {
-      function isValidPost() {
-        return request.resource.data.size() == 3
-          && request.resource.data.user is string
-          && request.resource.data.user == request.auth.uid
-          && request.resource.data.title is string
-          && request.resource.data.title.size() <= 20
-          && request.resource.data.content is string
-          && request.resource.data.content.size() <= 1000;
+      function isValidPost(post) {
+        return post.size() == 5
+          && post.user is string
+          && post.user == request.auth.uid
+          && post.title is string
+          && post.title.size() <= 20
+          && post.content is string
+          && post.content.size() <= 1000
+          && post.createdAt == request.time
+          && post.updatedAt == request.time;
       }
 
       allow read;
-      allow write: if isSignedIn() && isValidPost();
+      allow create: if isSignedIn() && isValidPost(request.resource.data);
     }
   }
 }

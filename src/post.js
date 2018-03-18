@@ -13,14 +13,31 @@ const index = async () => {
   return res;
 };
 
-const put = async post =>
+const create = post =>
   firebase
     .firestore()
     .collection(collection)
     .doc()
-    .set(post);
+    .set({
+      ...post,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+const update = post => {
+  const { id, ...attrs } = post;
+  return firebase
+    .firestore()
+    .collection(collection)
+    .doc(id)
+    .set({
+      ...attrs,
+      updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+};
 
 export default {
   index,
-  put
+  create,
+  update
 };
