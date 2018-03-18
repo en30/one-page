@@ -14,7 +14,7 @@ export default class Post extends Component {
     const { match: { params: { id } } } = this.props;
     this.props.loading.start();
     const post = await api.show(id);
-    this.props.loading.start();
+    this.props.loading.stop();
     this.setState({ post });
   };
 
