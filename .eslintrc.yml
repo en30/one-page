@@ -7,3 +7,5 @@ extends:
   - plugin:react/recommended
   - plugin:flowtype/recommended
   - plugin:prettier/recommended
+rules:
+  react/prop-types: 1
