@@ -51,11 +51,13 @@ class App extends Component {
     this.setState({ messageVisible: false });
   };
 
-  loading = {
-    start: () => {
+  loading = async af => {
+    try {
       this.setState({ loading: true });
-    },
-    stop: () => {
+      return await af();
+    } catch (e) {
+      console.error(e);
+    } finally {
       this.setState({ loading: false });
     }
   };
