@@ -1,7 +1,10 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { Card, Form, Container } from "semantic-ui-react";
 import post from "./post";
 import routes from "./routes";
+
+const { Input, Button, Field, TextArea } = Form;
 
 const initialState = { title: "", content: "" };
 
@@ -30,30 +33,41 @@ export default class NewPost extends Component {
     const { title, content } = this.state;
     return (
       <div>
-        <form onSubmit={this.create}>
-          <section>
-            <label>
-              タイトル
-              <input
+        <Card fluid>
+          <Card.Content>
+            <Card.Header>新規ポスト</Card.Header>
+          </Card.Content>
+          <Card.Content>
+            <Form onSubmit={this.create}>
+              <Input
                 type="text"
                 name="title"
                 value={title}
                 onChange={this.update}
+                label="タイトル"
               />
-            </label>
-          </section>
 
-          <section>
-            <label>
-              本文
-              <textarea name="content" value={content} onChange={this.update} />
-            </label>
-          </section>
+              <Field>
+                <label>本文</label>
+                <TextArea
+                  rows="10"
+                  name="content"
+                  value={content}
+                  onChange={this.update}
+                />
+              </Field>
 
-          <input type="submit" value="投稿" />
-        </form>
-
-        <Link to={routes.root}>一覧に戻る</Link>
+              <Container textAlign="center">
+                <Button secondary type="submit">
+                  投稿
+                </Button>
+              </Container>
+            </Form>
+          </Card.Content>
+        </Card>
+        <Container textAlign="center">
+          <Link to={routes.root}>一覧に戻る</Link>
+        </Container>
       </div>
     );
   }
