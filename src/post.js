@@ -7,33 +7,31 @@ import routes from "./routes";
 export default class Post extends Component {
   constructor(props) {
     super(props);
-    this.state = { post: null, loading: true };
+    this.state = { post: null };
   }
 
   componentDidMount = async () => {
     const { match: { params: { id } } } = this.props;
+    this.props.startLoading();
     const post = await api.show(id);
-    this.setState({ post, loading: false });
+    this.props.stopLoading();
+    this.setState({ post });
   };
 
   render() {
-    const { post, loading } = this.state;
+    const { post } = this.state;
     return (
       <div>
         <Container textAlign="center">
           <Link to={routes.root}>一覧に戻る</Link>
         </Container>
 
-        {loading ? (
-          <Dimmer active>
-            <Loader />
-          </Dimmer>
-        ) : (
+        {post ? (
           <Container style={{ paddingTop: "3em" }}>
             <Header>{post.title}</Header>
             <Container as="article">{post.content}</Container>
           </Container>
-        )}
+        ) : null}
       </div>
     );
   }

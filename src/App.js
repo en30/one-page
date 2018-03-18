@@ -1,6 +1,12 @@
 import React, { Component } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
-import { Container, Message, Transition } from "semantic-ui-react";
+import {
+  Container,
+  Message,
+  Transition,
+  Dimmer,
+  Loader
+} from "semantic-ui-react";
 import "./App.css";
 import session from "./api/session";
 import Header from "./Header";
@@ -16,7 +22,8 @@ class App extends Component {
       currentUser: null,
       posts: {},
       messageVisible: false,
-      message: null
+      message: null,
+      loading: false
     };
     session.onChange(currentUser => this.setState({ currentUser }));
   }
@@ -43,11 +50,25 @@ class App extends Component {
     this.setState({ messageVisible: false });
   };
 
+  startLoading = () => {
+    this.setState({ loading: true });
+  };
+
+  stopLoading = () => {
+    this.setState({ loading: false });
+  };
+
   render() {
-    const { currentUser, message, messageVisible } = this.state;
+    const { currentUser, message, messageVisible, loading } = this.state;
     return (
       <BrowserRouter>
         <div className="App">
+          {loading ? (
+            <Dimmer active>
+              <Loader />
+            </Dimmer>
+          ) : null}
+
           <Header
             currentUser={currentUser}
             signIn={this.signIn}
@@ -67,7 +88,15 @@ class App extends Component {
 
             <Container as="main" style={{ marginTop: "2em" }}>
               <Switch>
-                <Route exact path={routes.root} component={Posts} />
+                <Route exact path={routes.root}>
+                  {props => (
+                    <Posts
+                      {...props}
+                      startLoading={this.startLoading}
+                      stopLoading={this.stopLoading}
+                    />
+                  )}
+                </Route>
                 <Route path={routes.posts.new}>
                   {props => (
                     <NewPost
@@ -77,7 +106,15 @@ class App extends Component {
                     />
                   )}
                 </Route>
-                <Route path={routes.posts.show()} component={Post} />
+                <Route path={routes.posts.show()}>
+                  {props => (
+                    <Post
+                      {...props}
+                      startLoading={this.startLoading}
+                      stopLoading={this.stopLoading}
+                    />
+                  )}
+                </Route>
               </Switch>
             </Container>
           </Container>
