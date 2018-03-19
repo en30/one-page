@@ -21,9 +21,7 @@ class App extends Component {
     super(props);
     this.state = {
       currentUser: null,
-      posts: {},
-      messageVisible: false,
-      message: null,
+      message: { content: null, color: "green", visible: false },
       loading: false
     };
     session.onChange(currentUser => this.setState({ currentUser }));
@@ -39,16 +37,11 @@ class App extends Component {
     this.setState({ currentUser: null });
   };
 
-  setMessage = message => {
-    this.setState({ message, messageVisible: true });
-  };
-
-  resetMessage = () => {
-    this.setState({ messageVisible: false });
-  };
-
-  dismissMessage = () => {
-    this.setState({ messageVisible: false });
+  message = {
+    info: content =>
+      this.setState({ message: { content, color: "green", visible: true } }),
+    dismiss: () =>
+      this.setState({ message: { ...this.state.message, visible: false } })
   };
 
   loading = async af => {
@@ -67,7 +60,7 @@ class App extends Component {
   ));
 
   render() {
-    const { currentUser, message, messageVisible, loading } = this.state;
+    const { currentUser, message, loading } = this.state;
     return (
       <BrowserRouter>
         <div className="App">
@@ -85,12 +78,11 @@ class App extends Component {
 
           <Container style={{ marginTop: "7em" }}>
             <Transition
-              visible={messageVisible}
+              visible={message.visible}
               duration={{ show: 200, hide: 500 }}
-              onHide={this.resetMessage}
             >
-              <Message positive onDismiss={this.dismissMessage}>
-                {message}
+              <Message color={message.color} onDismiss={this.message.dismiss}>
+                {message.content}
               </Message>
             </Transition>
 
@@ -106,7 +98,7 @@ class App extends Component {
                     <NewPost
                       {...props}
                       currentUser={currentUser}
-                      setMessage={this.setMessage}
+                      setMessage={this.message.info}
                     />
                   )}
                 </Route>
