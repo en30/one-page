@@ -1,8 +1,15 @@
 import React, { Component } from "react";
-import { Container, Header, Loader, Dimmer } from "semantic-ui-react";
+import { Container, Card, Image } from "semantic-ui-react";
 import Link from "../Link";
 import api from "../api/post";
 import routes from "../routes";
+
+const PostUser = ({ user }) => (
+  <Card.Content>
+    <Image avatar src={user.photoURL} />
+    <Link to={routes.users.show(user.id)}>{user.displayName}</Link>
+  </Card.Content>
+);
 
 export default class Post extends Component {
   constructor(props) {
@@ -25,10 +32,13 @@ export default class Post extends Component {
         </Container>
 
         {post ? (
-          <Container style={{ paddingTop: "3em" }}>
-            <Header>{post.title}</Header>
-            <Container as="article">{post.content}</Container>
-          </Container>
+          <Card fluid>
+            <PostUser user={post.user} />
+            <Card.Content as="article">
+              <Card.Header as="h1">{post.title}</Card.Header>
+              <Card.Description>{post.content}</Card.Description>
+            </Card.Content>
+          </Card>
         ) : null}
       </div>
     );

@@ -12,8 +12,9 @@ import "./App.css";
 import session from "./api/session";
 import Header from "./Header";
 import Post from "./pages/Post";
-import Posts from "./pages/Posts";
+import PostIndex from "./pages/PostIndex";
 import NewPost from "./pages/NewPost";
+import User from "./pages/User";
 import routes from "./routes";
 
 class App extends Component {
@@ -24,9 +25,10 @@ class App extends Component {
       message: { content: null, color: "green", visible: false },
       loading: false
     };
-    page("/", this.dispatch(Posts));
+    page("/", this.dispatch(PostIndex));
     page("/posts/new", this.requireAuthentication, this.dispatch(NewPost));
     page("/posts/:id", this.dispatch(Post));
+    page("/users/:id", this.dispatch(User));
     session.onChange(currentUser => this.setState({ currentUser }));
   }
 

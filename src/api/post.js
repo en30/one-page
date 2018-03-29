@@ -40,6 +40,17 @@ const index = async () => {
   return embedUsers(querySnapshot, users);
 };
 
+const users = async user => {
+  const querySnapshot = await firebase
+    .firestore()
+    .collection(collection)
+    .where("user", "==", user.id)
+    .orderBy("createdAt", "desc")
+    .get();
+  const users = { [user.id]: user };
+  return embedUsers(querySnapshot, users);
+};
+
 const create = post =>
   firebase
     .firestore()
@@ -67,5 +78,6 @@ export default {
   show,
   index,
   create,
-  update
+  update,
+  users
 };
