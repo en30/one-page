@@ -1,5 +1,4 @@
 import React, { Component } from "react";
-import { BrowserRouter, Route, Switch } from "react-router-dom";
 import {
   Container,
   Message,
@@ -8,12 +7,13 @@ import {
   Loader
 } from "semantic-ui-react";
 import memoize from "lodash.memoize";
+import page from "page";
 import "./App.css";
 import session from "./api/session";
 import Header from "./Header";
-import Post from "./Post";
-import Posts from "./Posts";
-import NewPost from "./NewPost";
+import Post from "./pages/Post";
+import Posts from "./pages/Posts";
+import NewPost from "./pages/NewPost";
 import routes from "./routes";
 
 class App extends Component {
@@ -24,22 +24,44 @@ class App extends Component {
       message: { content: null, color: "green", visible: false },
       loading: false
     };
+    page("/", this.dispatch(Posts));
+    page("/posts/new", this.requireAuthentication, this.dispatch(NewPost));
+    page("/posts/:id", this.dispatch(Post));
     session.onChange(currentUser => this.setState({ currentUser }));
   }
 
+  componentWillMount() {
+    page();
+  }
+
+  requireAuthentication = (ctx, next) => {
+    if (this.state.currentUser) return next();
+    this.message.alert("ログインが必要です");
+    page("/");
+  };
+
+  dispatch = component => context => {
+    this.setState({ component, context });
+  };
+
   signIn = async () => {
     const currentUser = await session.create();
+    this.message.info("ログインしました");
     this.setState({ currentUser });
   };
 
   signOut = async () => {
     await session.destroy();
     this.setState({ currentUser: null });
+    this.message.info("ログアウトしました");
+    page("/");
   };
 
   message = {
     info: content =>
       this.setState({ message: { content, color: "green", visible: true } }),
+    alert: content =>
+      this.setState({ message: { content, color: "yellow", visible: true } }),
     dismiss: () =>
       this.setState({ message: { ...this.state.message, visible: false } })
   };
@@ -55,14 +77,11 @@ class App extends Component {
     }
   };
 
-  appendProps = memoize((Comp, appended) => props => (
-    <Comp {...props} {...appended} />
-  ));
-
   render() {
-    const { currentUser, message, loading } = this.state;
+    const { currentUser, message, loading, context } = this.state;
+    const C = this.state.component;
     return (
-      <BrowserRouter>
+      <div>
         <div className="App">
           {loading ? (
             <Dimmer active>
@@ -87,30 +106,15 @@ class App extends Component {
             </Transition>
 
             <Container as="main" style={{ marginTop: "2em" }}>
-              <Switch>
-                <Route
-                  exact
-                  path={routes.root}
-                  component={this.appendProps(Posts, { loading: this.loading })}
-                />
-                <Route path={routes.posts.new}>
-                  {props => (
-                    <NewPost
-                      {...props}
-                      currentUser={currentUser}
-                      setMessage={this.message.info}
-                    />
-                  )}
-                </Route>
-                <Route
-                  path={routes.posts.show()}
-                  component={this.appendProps(Post, { loading: this.loading })}
-                />
-              </Switch>
+              <C
+                context={context}
+                currentUser={currentUser}
+                loading={this.loading}
+              />
             </Container>
           </Container>
         </div>
-      </BrowserRouter>
+      </div>
     );
   }
 }

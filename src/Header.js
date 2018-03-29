@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import { Menu, Container, Dropdown, Image, Button } from "semantic-ui-react";
+import Link from "./Link";
 import routes from "./routes";
 
 const User = ({ user }) => (

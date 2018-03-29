@@ -22,10 +22,10 @@ const extractUniqueUserIds = querySnapshot => {
 };
 
 const embedUsers = (querySnapshot, users) => {
-  let res = {};
+  let res = [];
   querySnapshot.forEach(doc => {
     const attrs = doc.data();
-    res[doc.id] = { id: doc.id, ...attrs, user: users[attrs.user] };
+    res.push({ id: doc.id, ...attrs, user: users[attrs.user] });
   });
   return res;
 };

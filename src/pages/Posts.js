@@ -1,13 +1,13 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import { Container, Header, Item, Image } from "semantic-ui-react";
-import post from "./api/post";
-import routes from "./routes";
+import Link, { push } from "../Link";
+import routes from "../routes";
+import post from "../api/post";
 
 export default class Posts extends Component {
   constructor(props) {
     super(props);
-    this.state = { posts: {} };
+    this.state = { posts: [] };
   }
 
   componentDidMount = async () => {
@@ -16,17 +16,16 @@ export default class Posts extends Component {
   };
 
   render() {
-    const { history } = this.props;
     const { posts } = this.state;
     return (
       <div>
         <Header>最新のポスト一覧</Header>
 
         <Item.Group link>
-          {Object.values(posts).map(post => (
+          {posts.map(post => (
             <Item
               key={post.id}
-              onClick={() => history.push(routes.posts.show(post.id))}
+              onClick={() => push(routes.posts.show(post.id))}
             >
               <Item.Image avatar size="mini" src={post.user.photoURL} />
               <Item.Content verticalAlign="middle">

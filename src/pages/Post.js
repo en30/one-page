@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import { Container, Header, Loader, Dimmer } from "semantic-ui-react";
-import api from "./api/post";
-import routes from "./routes";
+import Link from "../Link";
+import api from "../api/post";
+import routes from "../routes";
 
 export default class Post extends Component {
   constructor(props) {
@@ -11,7 +11,7 @@ export default class Post extends Component {
   }
 
   componentDidMount = async () => {
-    const { match: { params: { id } } } = this.props;
+    const { context: { params: { id } } } = this.props;
     const post = await this.props.loading(() => api.show(id));
     this.setState({ post });
   };

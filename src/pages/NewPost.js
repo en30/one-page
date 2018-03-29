@@ -1,8 +1,8 @@
 import React, { Component } from "react";
-import { Link } from "react-router-dom";
 import { Card, Form, Container } from "semantic-ui-react";
-import post from "./api/post";
-import routes from "./routes";
+import Link, { push } from "../Link";
+import post from "../api/post";
+import routes from "../routes";
 
 const { Input, Button, Field, TextArea } = Form;
 
@@ -20,14 +20,14 @@ export default class NewPost extends Component {
 
   create = async event => {
     event.preventDefault();
-    const { currentUser, setMessage, history } = this.props;
+    const { currentUser, setMessage } = this.props;
     const { title, content } = this.state;
     this.setState({ loading: true });
     try {
       await post.create({ title, content, user: currentUser.uid });
       this.reset();
       setMessage("ポストを作成しました！");
-      history.push(routes.root);
+      push(routes.root);
     } catch (err) {
       console.error(err);
     } finally {
