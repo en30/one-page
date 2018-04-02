@@ -1,5 +1,8 @@
 module.exports = {
   mode: 'spa',
+  modules: [
+    ['semantic-ui-vue/nuxt', {css: false}],
+  ],
   /*
   ** Headers of the page
   */
@@ -11,7 +14,8 @@ module.exports = {
       { hid: 'description', name: 'description', content: 'Nuxt.js project' }
     ],
     link: [
-      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' }
+      { rel: 'icon', type: 'image/x-icon', href: '/favicon.ico' },
+      { rel: 'stylesheet', href: '//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.3.0/semantic.min.css' }
     ]
   },
   /*
@@ -35,5 +39,5 @@ module.exports = {
         })
       }
     }
-  }
+  },
 }
