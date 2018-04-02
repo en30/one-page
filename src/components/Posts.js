@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Feed } from "semantic-ui-react";
-import Link, { push } from "../Link";
+import Link, { push } from "./Link";
 import routes from "../routes";
 
 const Posts = ({ posts }) => (

@@ -1,20 +1,18 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import firebase from "firebase";
 import "./index.css";
-import App from "./App";
+import Router from "./Router";
 import registerServiceWorker from "./registerServiceWorker";
+import store from "./store";
 
-const config = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  databaseURL: process.env.REACT_APP_FIREBASE_DATABASE_URL,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: "",
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID
-};
-
-firebase.initializeApp(config);
+store.initialize();
 registerServiceWorker();
 
-ReactDOM.render(<App />, document.getElementById("root"));
+const routes = {
+  "/": "PostIndex",
+  "/posts/new": ["requireAuthentication", "NewPost"],
+  "/posts/:id": "Post",
+  "/users/:id": "User"
+};
+
+ReactDOM.render(<Router routes={routes} />, document.getElementById("root"));

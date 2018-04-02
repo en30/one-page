@@ -1,23 +1,19 @@
 import React, { Component } from "react";
 import { Container, Header, Item, Image, Card } from "semantic-ui-react";
-import Link, { push } from "../Link";
+import Link, { push } from "../components/Link";
 import routes from "../routes";
-import post from "../api/post";
 import Posts from "../components/Posts";
+import Loading from "../components/Loading";
+import store from "../store";
 
+@store.subscribe(store.select("loading", "latestPosts"))
 export default class PostIndex extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { posts: [] };
+  componentDidMount() {
+    store.fetchLatestPosts();
   }
 
-  componentDidMount = async () => {
-    const posts = await this.props.loading(post.index);
-    this.setState({ posts });
-  };
-
   render() {
-    const { posts } = this.state;
+    const { latestPosts, loading } = this.state;
     return (
       <Card fluid>
         <Card.Content>
@@ -25,7 +21,8 @@ export default class PostIndex extends Component {
         </Card.Content>
 
         <Card.Content>
-          <Posts posts={posts} />
+          <Loading loading={loading} />
+          <Posts posts={latestPosts} />
         </Card.Content>
 
         <Card.Content>

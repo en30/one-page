@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { Card, Form, Container } from "semantic-ui-react";
-import Link, { push } from "../Link";
+import Link, { push } from "../components/Link";
 import post from "../api/post";
 import routes from "../routes";
 

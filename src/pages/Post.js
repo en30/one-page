@@ -1,8 +1,9 @@
 import React, { Component } from "react";
 import { Container, Card, Image } from "semantic-ui-react";
-import Link from "../Link";
-import api from "../api/post";
+import Link from "../components/Link";
+import Loading from "../components/Loading";
 import routes from "../routes";
+import store from "../store";
 
 const PostUser = ({ user }) => (
   <Card.Content>
@@ -11,26 +12,25 @@ const PostUser = ({ user }) => (
   </Card.Content>
 );
 
+@store.subscribe(({ loading, posts }, props) => ({
+  loading,
+  post: posts.get(props.context.params.id)
+}))
 export default class Post extends Component {
-  constructor(props) {
-    super(props);
-    this.state = { post: null };
-  }
-
   componentDidMount = async () => {
     const { context: { params: { id } } } = this.props;
-    const post = await this.props.loading(() => api.show(id));
-    this.setState({ post });
+    store.findPost(id);
   };
 
   render() {
-    const { post } = this.state;
+    const { post, loading } = this.state;
     return (
       <div>
         <Container textAlign="center">
           <Link to={routes.root}>一覧に戻る</Link>
         </Container>
 
+        <Loading loading={loading} />
         {post ? (
           <Card fluid>
             <PostUser user={post.user} />
