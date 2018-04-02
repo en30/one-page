@@ -1,7 +1,11 @@
 module.exports = {
   mode: 'spa',
   modules: [
+    '@nuxtjs/dotenv',
     ['semantic-ui-vue/nuxt', {css: false}],
+  ],
+  plugins: [
+    '~/plugins/firebase',
   ],
   /*
   ** Headers of the page

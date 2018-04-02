@@ -13,6 +13,8 @@
     "precommit": "npm run lint"
   },
   "dependencies": {
+    "@nuxtjs/dotenv": "^1.1.1",
+    "firebase": "^4.12.1",
     "nuxt": "^1.0.0",
     "semantic-ui-vue": "^0.2.6"
   },
