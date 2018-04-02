@@ -48,7 +48,7 @@ const fetchLatestPosts = async () => {
   return posts;
 };
 
-const findPost = async id => {
+const fetchPost = async id => {
   if (store.posts.has(id)) return store.posts.get(id);
   assign({ loading: true });
   const post = await postApi.show(id);
@@ -124,7 +124,7 @@ export default {
   subscribe,
   select,
   fetchLatestPosts,
-  findPost,
+  fetchPost,
   fetchUser,
   fetchUsersPosts,
   alertMessage,

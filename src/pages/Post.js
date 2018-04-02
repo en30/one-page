@@ -19,7 +19,7 @@ const PostUser = ({ user }) => (
 export default class Post extends Component {
   componentDidMount = async () => {
     const { context: { params: { id } } } = this.props;
-    store.findPost(id);
+    store.fetchPost(id);
   };
 
   render() {
