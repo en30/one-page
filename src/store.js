@@ -1,6 +1,7 @@
 import firebase from "firebase";
 import page from "page";
 import pick from "lodash.pick";
+import userApi from "./api/user";
 import postApi from "./api/post";
 import session from "./api/session";
 import { Map } from "immutable";
@@ -11,7 +12,9 @@ let store = {
   currentUser: null,
   message: { content: null, color: "green", visible: false },
   latestPosts: [],
-  posts: new Map()
+  usersPosts: new Map(),
+  posts: new Map(),
+  users: new Map()
 };
 
 const change = () => {
@@ -51,6 +54,25 @@ const findPost = async id => {
   const post = await postApi.show(id);
   const posts = store.posts.set(id, post);
   assign({ posts, loading: false });
+};
+
+const fetchUser = async id => {
+  if (store.users.has(id)) return store.users.get(id);
+  assign({ loading: true });
+  const user = await userApi.show(id);
+  const users = store.users.set(id, user);
+  assign({ users, loading: false });
+  return user;
+};
+
+const fetchUsersPosts = async id => {
+  if (store.usersPosts.has(id)) return store.usersPosts.get(id);
+  assign({ loading: true });
+  const user = await fetchUser(id);
+  const posts = await postApi.users(user);
+  const usersPosts = store.usersPosts.set(id, posts);
+  const newPosts = posts.reduce((s, e) => s.set(e.id, e), store.posts);
+  assign({ usersPosts, posts: newPosts, loading: false });
 };
 
 const message = {
@@ -103,6 +125,8 @@ export default {
   select,
   fetchLatestPosts,
   findPost,
+  fetchUser,
+  fetchUsersPosts,
   alertMessage,
   signIn,
   signOut,
