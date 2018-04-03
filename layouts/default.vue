@@ -9,6 +9,9 @@
 import AppHeader from '~/components/AppHeader.vue'
 
 export default {
+  created() {
+    this.$store.dispatch('subscribeAuth');
+  },
   components: {
     AppHeader
   }

@@ -25,22 +25,11 @@
 </template>
 
 <script>
+import { mapState, mapActions } from 'vuex';
+
 export default {
-  data() {
-    return { currentUser: null }
-  },
-  methods: {
-    async signIn() {
-      this.$auth().languageCode = "ja";
-      const provider = new this.$auth.TwitterAuthProvider();
-      await this.$auth().setPersistence(this.$auth.Auth.Persistence.LOCAL);
-      const result = await this.$auth().signInWithPopup(provider);
-      this.currentUser = result.user;
-    },
-    signOut() {
-      this.currentUser = null;
-    }
-  }
+  computed: mapState(['currentUser']),
+  methods: mapActions([ 'signIn', 'signOut' ]),
 }
 </script>
 
